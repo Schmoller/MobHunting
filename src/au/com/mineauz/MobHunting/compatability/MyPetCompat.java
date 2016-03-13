@@ -9,40 +9,74 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import au.com.mineauz.MobHunting.MobHunting;
+import de.Keyle.MyPet.MyPetPlugin;
+import de.Keyle.MyPet.api.entity.MyPetBukkitEntity;
+import de.Keyle.MyPet.api.entity.MyPetType;
 
-import de.Keyle.MyPet.api.entity.MyPetEntity;
-import de.Keyle.MyPet.entity.types.MyPetType;
+public class MyPetCompat implements Listener {
+	private static boolean supported = false;
+	private static MyPetPlugin mPlugin;
 
-public class MyPetCompat implements Listener
-{
-	public MyPetCompat()
-	{
-		Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
+	public MyPetCompat() {
+		if (MobHunting.config().disableIntegrationMyPet) {
+			MobHunting.instance.getLogger().info(
+					"Compatability with MyPet is disabled in config.yml");
+		} else {
+			mPlugin = (MyPetPlugin) Bukkit.getPluginManager()
+					.getPlugin("MyPet");
+			Bukkit.getPluginManager().registerEvents(this, MobHunting.instance);
+			MobHunting.instance.getLogger().info(
+					"Enabling compatability with MyPet ("
+							+ getMyPetPlugin().getDescription().getVersion()
+							+ ")");
+			supported = true;
+		}
 	}
-	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	private void onWolfKillMob(EntityDeathEvent event)
-	{
-		if(!MobHunting.isHuntEnabledInWorld(event.getEntity().getWorld()) || !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
-			return;
-		
-		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent)event.getEntity().getLastDamageCause();
-		
-		if(!(dmg.getDamager() instanceof MyPetEntity))
-			return;
-		
-		MyPetEntity killer = (MyPetEntity)dmg.getDamager();
-		
-		if(killer.getPetType() != MyPetType.Wolf)
+
+	// **************************************************************************
+	// OTHER FUNCTIONS
+	// **************************************************************************
+	public static MyPetPlugin getMyPetPlugin() {
+		return mPlugin;
+	}
+
+	public static boolean isMyPet(Object obj) {
+		return (supported && obj instanceof MyPetBukkitEntity && MobHunting
+				.config().disableIntegrationMyPet);
+	}
+
+	public static boolean isEnabledInConfig() {
+		return !MobHunting.config().disableIntegrationMyPet;
+	}
+
+	// **************************************************************************
+	// EVENTS
+	// **************************************************************************
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	private void onWolfKillMob(EntityDeathEvent event) {
+		if (!MobHunting.isHuntEnabledInWorld(event.getEntity().getWorld())
+				|| !(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent))
 			return;
 
-		
-		if(killer.getOwner() != null)
-		{
+		EntityDamageByEntityEvent dmg = (EntityDamageByEntityEvent) event
+				.getEntity().getLastDamageCause();
+
+		if (!(dmg.getDamager() instanceof MyPetBukkitEntity))
+			return;
+
+		MyPetBukkitEntity killer = (MyPetBukkitEntity) dmg.getDamager();
+
+		if (killer.getPetType() != MyPetType.Wolf)
+			return;
+
+		MobHunting.debug("A Wolf Killed a mob");
+
+		if (killer.getOwner() != null) {
 			Player owner = killer.getOwner().getPlayer();
-			
-			if(owner != null && MobHunting.isHuntEnabled(owner))
-			{
-				MobHunting.instance.getAchievements().awardAchievementProgress("fangmaster", owner, 1); //$NON-NLS-1$
+
+			if (owner != null && MobHunting.isHuntEnabled(owner)) {
+				MobHunting.instance.getAchievements().awardAchievementProgress(
+						"fangmaster", owner, 1);
 			}
 		}
 	}

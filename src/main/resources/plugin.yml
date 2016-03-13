@@ -1,12 +1,10 @@
 name: MobHunting
-version: 1.9.0
-
 main: au.com.mineauz.MobHunting.MobHunting
-
-author: Schmoller
-
+version: ${version}
+description: A Mobhunting plugin
+author: Rocologo
 depend: [Vault]
-softdepend: [Minigames, MyPet, WorldEdit]
+softdepend: [Essentials, WorldEdit, WorldGuard, MythicMobs, Citizens, Sentry, ProtocolLib, Minigames, MyPet, MobArena, PVPArena, LibsDisguises, DisguiseCraft, iDisguise]
 
 commands:
   mobhunt:
@@ -27,6 +25,12 @@ permissions:
     default: op
     children:
       mobhunting.cmd: true
+  mobhunting.update:
+    description: Allows a player to update the plugin
+    default: op
+  mobhunting.region:
+    description: Allows a player to set Worldguard custom flag MobHunting
+    default: op
   mobhunting.listachievements:
     description: Allows a player to see all their achievements
     default: true

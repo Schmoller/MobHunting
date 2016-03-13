@@ -4,27 +4,27 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import au.com.mineauz.MobHunting.Messages;
-import au.com.mineauz.MobHunting.MobHuntKillEvent;
 import au.com.mineauz.MobHunting.MobHunting;
+import au.com.mineauz.MobHunting.events.MobHuntKillEvent;
 
 public class TheHuntBegins implements Achievement, Listener
 {
 	@Override
 	public String getName()
 	{
-		return Messages.getString("achievements.huntbegins.name"); //$NON-NLS-1$
+		return Messages.getString("achievements.huntbegins.name"); 
 	}
 
 	@Override
 	public String getID()
 	{
-		return "huntbegins"; //$NON-NLS-1$
+		return "huntbegins"; 
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return Messages.getString("achievements.huntbegins.description"); //$NON-NLS-1$
+		return Messages.getString("achievements.huntbegins.description"); 
 	}
 
 	@Override

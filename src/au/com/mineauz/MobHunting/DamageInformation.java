@@ -20,4 +20,9 @@ public class DamageInformation
 	public boolean wolfAssist;
 	
 	public boolean wasFlying;
+	
+	//Disguises
+	public boolean playerUndercover; //Player attacking undercover (disguise)
+	public boolean mobCoverBlown; //Player attacked a disguised Mob/Player
+
 }
